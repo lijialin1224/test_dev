@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse
-
-
+from django.http import HttpResponse,HttpResponseRedirect
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 #用来写请求的处理逻辑的
@@ -13,8 +13,10 @@ def hello(requests):
 #登录
 
 def login(request):
-    return render(request,"login.html")
-def login_action(request):
+#返回登录页面
+    if request.method=="GET":
+        return render(request,"login.html")
+
 #登录动作处理
     print("请求方法:",request.method)
     if request.method=="POST":
@@ -24,10 +26,15 @@ def login_action(request):
             return render(request,"login.html",{
                 "error":'用户名或密码为空'
             })
-        if username=="admin" and password=="admin123":
-            return render(request,"manage.html",{
-            })
+        user=auth.authenticate(username=username,password=password)
+        print(user)
+        if user is not None:
+            auth.login(request,user)
+            return HttpResponseRedirect("/manage/")
         else:
             return render(request,"login.html",{
                 "error":"用户名或密码错误"
             })
+@login_required     
+def mange(request):
+        return render(request,"manage.html")

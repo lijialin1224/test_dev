@@ -21,6 +21,7 @@ urlpatterns = [
     path('hello/',views.hello),
 #登录
     path('',views.login),
-    path('login_action/',views.login_action),
+    path('login/',views.login),
+    path('manage/',views.mange),
 
 ]
